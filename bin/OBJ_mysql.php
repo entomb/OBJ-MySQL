@@ -12,8 +12,11 @@
     $database_info["pass"]      = "PASSWORD";
 **/
 
+//load the result class file
+include("./OBJ_mysql_result.php");
+
 //------------------------------------------------------------------
-//DATABASE DRIVER CLASS - START
+//DATABASE DRIVER CLASS
 //------------------------------------------------------------------
 class OBJ_mysql 
 {
@@ -78,7 +81,11 @@ class OBJ_mysql
         $this->status=0;
         $this->log("connect","tentativa de connectar a: ".$host. " user: ".$user);
         $this->link=mysql_connect($host, $user, $pass,true);
-        $this->select_database($database);
+        
+        if(!empty($this->database_info['pass'])){
+            $this->select_database($database);
+        }
+
         $this->set_charset('utf8');
         
 
