@@ -13,7 +13,7 @@
 **/
 
 //load the result class file
-include("./OBJ_mysql_result.php");
+include("OBJ_mysql_result.php");
 
 //------------------------------------------------------------------
 //DATABASE DRIVER CLASS
@@ -82,7 +82,7 @@ class OBJ_mysql
         $this->log("connect","tentativa de connectar a: ".$host. " user: ".$user);
         $this->link=mysql_connect($host, $user, $pass,true);
         
-        if(!empty($this->database_info['pass'])){
+        if(!empty($this->database_info['database'])){
             $this->select_database($database);
         }
 
