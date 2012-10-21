@@ -23,8 +23,11 @@
 Class OBJ_mysql_result{
     
 	/**
-	 * Defines the default result type for methods like fetch() and get();
-	 * @param string object|array
+	 * Defines the default result type for methods like fetch() and fetchAll();
+	 * basicly, I want to know if you prefer mysqli_fetch_object or mysqli_fetch_assoc.
+	 *
+	 * @var string object|array
+	 * 
 	 */
     var $_default_result_type = "object"; 
 
@@ -35,7 +38,7 @@ Class OBJ_mysql_result{
 
 
     /**
-     * the number of rows in the current result.
+     * the number of rows in the current result are loaded on the __construct
      */
     var $num_rows;
 
@@ -49,10 +52,10 @@ Class OBJ_mysql_result{
     }
 
     function fetch(){
-    	if($_default_result_type=='object'){
+    	if($this->_default_result_type=='object'){
     		return $this->fetchObject();
     	}
-    	if($_default_result_type=='array'){
+    	if($this->_default_result_type=='array'){
     		return $this->fetchArray();
     	}
     }
@@ -66,28 +69,28 @@ Class OBJ_mysql_result{
     }
 
     function fetchAll(){
-    	if($_default_result_type=='object'){
+    	if($this->_default_result_type=='object'){
     		return $this->fetchAllObject();
     	}
-    	if($_default_result_type=='array'){
+    	if($this->_default_result_type=='array'){
     		return $this->fetchAllArray();
     	}
     }
 
     function fetchAllObject(){
-    	$DataAssoc = array();
-        while($row = mysqli_fetch_assoc($this->result)){
-            $DataAssoc[] = $row;
+    	$Data = array();
+        while($row = mysqli_fetch_object($this->result)){
+            $Data[] = $row;
         }
-        return $DataAssoc;
+        return $Data;
     }
 
     function fetchAllArray(){
-    	$DataObject = array();
-        while($row = mysqli_fetch_object($this->result)){
-            $DataObject[] = $row;
+    	$Data = array();
+        while($row = mysqli_fetch_assoc($this->result)){
+            $Data[] = $row;
         }
-        return $DataObject;
+        return $Data;
     }
 
     //helper functions
@@ -95,13 +98,25 @@ Class OBJ_mysql_result{
         return ($this->result->num_rows>0) ? true : false;
     }
 
-    function __destroy(){
+    
 
-    	mysqli_free($this->result);
+    function free(){
+    	mysqli_free_result($this->result);
+    }
+
+    /**
+     * This will make sure that the result is set free when the variable is unset() 
+     * it also works when it falls under garbage colecting
+     * 
+    */
+    function __destruct(){
+    	return $this->free(); 
     }
 
 
     //aliases
     function getAll(){ return $this->fetchAll(); }
+    function getObject(){ return $this->fetchAllObject(); }
+    function getArray(){ return $this->fetchAllArray(); }
 
 }

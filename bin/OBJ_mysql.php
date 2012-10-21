@@ -99,9 +99,7 @@ Class OBJ_mysql{
     }
 
     function close(){
-
         mysqli_close($this->link);
-
     }
 
     private function _displayBox($e){

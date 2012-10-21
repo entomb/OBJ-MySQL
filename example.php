@@ -9,7 +9,6 @@
         'database' => 'test_db',
     );
 
-echo ini_get("mysqli.default_port");
     //creating a new MySQL Connection
     $db = new OBJ_mysql($config);
     $query = $db->query("show tables");
@@ -17,8 +16,8 @@ echo ini_get("mysqli.default_port");
     
     
     var_dump($query->num_rows);
-    var_dump($query->getAll());
-    var_dump($query);
+    
+    var_dump($query->fetchAll());
 
 
 
