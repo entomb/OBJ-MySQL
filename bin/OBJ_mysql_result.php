@@ -6,7 +6,7 @@
  * @package Database
  * @subpackage MySQL
  * @author Jonathan Tavares <the.entomb@gmail.com>
- *
+ * @license GNU General Public License, version 3 
  *
 */
 
@@ -17,6 +17,7 @@
  * @package Database
  * @subpackage MySQL
  * @author Jonathan Tavares <the.entomb@gmail.com>
+ * @license GNU General Public License, version 3 
  * 
  *
 */
@@ -51,7 +52,9 @@ Class OBJ_mysql_result{
      * OBJ_mysql_result Construnctor
     */
     function OBJ_mysql_result($result = null){
-        if($result===null) return false;
+        if($result===null){
+            return false;  
+        } 
         
         $this->result = $result;
         $this->num_rows = $this->result->num_rows;
@@ -59,6 +62,10 @@ Class OBJ_mysql_result{
 
     /**
      * Fetches next row depending on the value of $_default_result_type
+     *
+     * @see OBJ_mysql_result::$_default_result_type 
+     * @see OBJ_mysql_result::fetchObject()
+     * @see OBJ_mysql_result::fetchArray()
     */
     function fetch(){
     	if($this->_default_result_type=='object'){
@@ -226,15 +233,44 @@ Class OBJ_mysql_result{
 
     //aliases for people used to the "get" syntax
 
-    /** Alias for fetch() */
-    function get(){       return $this->fetch(); }
-    /** Alias for fetchAll() */
-    function getAll(){    return $this->fetchAll(); }
-    /** Alias for fetchAllObject() */
-    function getObject(){ return $this->fetchAllObject(); }
-    /** Alias for fetchAllArray() */
-    function getArray(){  return $this->fetchAllArray(); }
-    /** Alias for fetchColumn() */
-    function getColumn(){ return $this->fetchColumn(); }
+    /** 
+     * Alias for fetch() 
+     * @see OBJ_mysql_result::fetch()
+    */
+    function get(){
+        return $this->fetch(); 
+    }
+
+    /** 
+     * Alias for fetchAll() 
+     * @see OBJ_mysql_result::fetchAll()
+    */
+    function getAll(){
+        return $this->fetchAll(); 
+    } 
+
+    /** 
+     * Alias for fetchAllObject() 
+     * @see OBJ_mysql_result::fetchAllObject()
+    */
+    function getObject(){ 
+        return $this->fetchAllObject(); 
+    }
+
+    /** 
+     * Alias for fetchAllArray() 
+     * @see OBJ_mysql_result::fetchAllArray()
+    */
+    function getArray(){
+        return $this->fetchAllArray(); 
+    }
+
+    /** 
+     * Alias for fetchColumn() 
+     * @see OBJ_mysql_result::fetchColumn()
+    */
+    function getColumn($key,$var){
+        return $this->fetchColumn($key,$var); 
+    }
 
 }
