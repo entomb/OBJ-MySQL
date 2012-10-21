@@ -90,7 +90,7 @@ Class OBJ_mysql{
     function query($str){
 
         $result = mysqli_query($this->link, $str);
-        if(is_object($result)){
+        if(is_object($result) && $result!==null){
             return new OBJ_mysql_result($result);
         }else{
             return ($result) ? true : false;
@@ -135,9 +135,6 @@ Class OBJ_mysql{
         }
         if(isset($config['port']) && !empty($config['port'])){
             $this->port = $config['port'];
-        }
-        if(isset($config['socket']) && !empty($config['socket'])){
-            $this->socket = $config['socket'];
         }
     }
 
