@@ -1,24 +1,151 @@
 <?php
 /**
+ * OBJ-mysql
  * Database Abstraction Class
- * @author: Jonas
- * --------------------------------------
+ *
+ * @package Database
+ * @subpackage MySQL
+ * @author Jonathan Tavares <the.entomb@gmail.com>
+ *
+ *
 */
 
-/** database_info DATA MODEL:
-    $database_info["host"]      = "localhost";
-    $database_info["database"]  = "YOUR_DATABASE_NAME";
-    $database_info["user"]      = "USER_NAME";
-    $database_info["pass"]      = "PASSWORD";
-**/
 
 //load the result class file
 include("OBJ_mysql_result.php");
 
-//------------------------------------------------------------------
-//DATABASE DRIVER CLASS
-//------------------------------------------------------------------
-class OBJ_mysql 
+/**
+ * OBJ-mysql class
+ *
+ *
+ *  Config DATA:
+ *
+ *  $database_info["hostname"]  = "localhost";
+ *  $database_info["database"]  = "YOUR_DATABASE_NAME";
+ *  $database_info["username"]  = "USER_NAME";
+ *  $database_info["password"]  = "PASSWORD";
+ *  $database_info["port"]      = "PORT";
+ *  $database_info["socket"]    = "SOCKET";
+ *
+ *
+ * @package Database
+ * @subpackage MySQL
+ * @author Jonathan Tavares <the.entomb@gmail.com>
+ *
+*/
+Class OBJ_mysql{
+
+    /**
+     * Default configuration variables
+    */
+    private $hostname = "";
+    private $username = "";
+    private $password = "";
+    private $database = "";
+    private $port = "3306";
+    private $socket;
+
+    protected $link;
+    protected $connected = false;
+
+    var $css_mysql_box_border = "1px solid orange";
+    var $css_mysql_box_bg = "#FFCC66";
+
+
+    function OBJ_mysql($config=null){
+        $this->connected = false;
+        $this->_loadConfig($config);
+        $this->connect();
+    }
+
+    function connect(){
+        if($this->connected){
+            return true;   
+        }
+
+        $this->link = mysqli_connect($this->hostname,
+                            $this->username,
+                            $this->password,
+                            $this->database,
+                            $this->port,
+                            $this->socket);
+        if($e = $this->connect_error){
+            $this->_displayBox($e);
+        }else{
+            $this->connected = true;
+        }
+
+    }
+
+    function reconnect($config=null){
+
+        $this->_loadConfig($config);
+        $this->connect();
+    }
+
+    function ready(){
+        return $this->connected();
+    }
+
+    function query($str){
+
+        $result = mysqli_query($this->link, $str);
+        if(is_object($result)){
+            return new OBJ_mysql_result($result);
+        }else{
+            return ($result) ? true : false;
+        }
+
+    }
+
+    function close(){
+
+        mysqli_close($this->link);
+
+    }
+
+    private function _displayBox($e){
+
+        $box_border = $this->css_mysql_box_border;
+        $box_bg = $this->css_mysql_box_bg;
+
+        echo "<div class='OBJ-mysql-box' style='boder:$box_border; background:$box_bg; padding:10px; margin:10px;'>";
+        echo "<b style='font-size:14px;'>MYSQL Error:</b> ";
+        echo $e;
+        echo "</div>";
+
+        $this->close();
+        exit();
+    }
+
+    
+
+    private function _loadConfig($config){
+        if(isset($config['hostname']) && !empty($config['hostname'])){
+            $this->hostname = $config['hostname'];
+        }
+        if(isset($config['username']) && !empty($config['username'])){
+            $this->username = $config['username'];
+        }
+        if(isset($config['password']) && !empty($config['password'])){
+            $this->password = $config['password'];
+        }
+        if(isset($config['database']) && !empty($config['database'])){
+            $this->database = $config['database'];
+        }
+        if(isset($config['port']) && !empty($config['port'])){
+            $this->port = $config['port'];
+        }
+        if(isset($config['socket']) && !empty($config['socket'])){
+            $this->socket = $config['socket'];
+        }
+    }
+
+
+}
+
+//old db class 
+class OBJ_mysql_old 
 {
 
     //connection info

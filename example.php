@@ -3,47 +3,23 @@
     
     //database configuration
     $config = array(
-        'host' => 'localhost',
-        'user' => 'root',
-        'pass' => '',
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
         'database' => 'test_db',
     );
 
-
+echo ini_get("mysqli.default_port");
     //creating a new MySQL Connection
     $db = new OBJ_mysql($config);
-    $db->query("SHOW TABLES");
-
-    //prints current query
-    echo $db;
-
-    //lets find some users
-    $db->query("SELECT * FROM test_users");
-
-    if($db->count==0){
-        echo "table is empty";
-    }else{
-        echo "table is not empty";
-    }
-
+    $query = $db->query("show tables");
+    var_dump($db);
     
-    $db->insert("test_users",array(
-                                'name' => "Mr. Smith",
-                                'age' => 12,
-                                'login' => "smith",
-                                'password' => "MD5('thesmith')",
-                                'date_created' => "NOW()",
-                            )
-                        );
+    
+    var_dump($query->num_rows);
+    var_dump($query->getAll());
+    var_dump($query);
 
-     $db->query("SELECT * FROM test_users");
-
-    if($db->count==0){
-        echo "table is empty";
-    }else{
-        echo "table is not empty";
-        echo $db;
-    }
 
 
 ?>
