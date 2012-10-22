@@ -68,11 +68,12 @@ Class OBJ_mysql_result{
     /**
      * OBJ_mysql_result Construnctor
     */
-    function OBJ_mysql_result($result = null){
+    function OBJ_mysql_result($sql="", $result = null){
         if($result===null){
             return false;  
         } 
         
+        $this->sql = $sql;
         $this->result = $result;
         $this->num_rows = $this->result->num_rows;
     }

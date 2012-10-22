@@ -1,12 +1,27 @@
 <?php
 /**
- * OBJ-mysql
- * Database Abstraction Class
+ * OBJ-mysql - Database Abstraction Class
  *
  * @package Database
  * @subpackage MySQL
  * @author Jonathan Tavares <the.entomb@gmail.com>
+ * @license GNU General Public License, version 3 
+ * @link https://github.com/entomb/OBJ-MySQL GitHub Source
  *
+ * Copyright (C) 2012  Jonathan Tavares <the.entomb@gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
 */
 
@@ -15,12 +30,12 @@
 include("OBJ_mysql_result.php");
 
 /**
- * OBJ-mysql class
+ * OBJ-mysql - Database Abstraction Class
  *
  *
  *  Config DATA:
  *
- *  $database_info["hostname"]  = "localhost";
+ *  $database_info["hostname"]  = "YOUR_HOST";
  *  $database_info["database"]  = "YOUR_DATABASE_NAME";
  *  $database_info["username"]  = "USER_NAME";
  *  $database_info["password"]  = "PASSWORD";
@@ -31,6 +46,8 @@ include("OBJ_mysql_result.php");
  * @package Database
  * @subpackage MySQL
  * @author Jonathan Tavares <the.entomb@gmail.com>
+ * @license GNU General Public License, version 3 
+ * @link https://github.com/entomb/OBJ-MySQL GitHub Source
  *
 */
 Class OBJ_mysql{
@@ -42,13 +59,16 @@ Class OBJ_mysql{
     private $username = "";
     private $password = "";
     private $database = "";
-    private $port = "3306";
-    private $socket;
+    private $port = "3306"; 
+    private $charset = "UTF-8"; 
 
     protected $link;
+    protected $LOG;
     protected $connected = false;
 
-    var $css_mysql_box_border = "1px solid orange";
+    var $query_count = 0;
+
+    var $css_mysql_box_border = "3px solid orange";
     var $css_mysql_box_bg = "#FFCC66";
 
 
@@ -56,6 +76,7 @@ Class OBJ_mysql{
         $this->connected = false;
         $this->_loadConfig($config);
         $this->connect();
+        $this->set_charset($this->charset);
     }
 
     function connect(){
@@ -63,18 +84,25 @@ Class OBJ_mysql{
             return true;   
         }
 
-        $this->link = mysqli_connect($this->hostname,
+        $this->link = mysqli_connect(
+                            $this->hostname,
                             $this->username,
                             $this->password,
                             $this->database,
-                            $this->port,
-                            $this->socket);
+                            $this->port
+                        );
+
         if($e = $this->connect_error){
             $this->_displayBox($e);
         }else{
             $this->connected = true;
         }
 
+
+    }
+
+    function set_charset($charset){
+        mysqli_set_charset($this->link,$charset);
     }
 
     function reconnect($config=null){
@@ -84,22 +112,161 @@ Class OBJ_mysql{
     }
 
     function ready(){
-        return $this->connected();
+        return ($this->connected) ? true : false;
     }
 
-    function query($str){
-
-        $result = mysqli_query($this->link, $str);
-        if(is_object($result) && $result!==null){
-            return new OBJ_mysql_result($result);
-        }else{
-            return ($result) ? true : false;
+    private function _logQuery($sql,$duration,$results){
+        $this->LOG[] = array(
+                    'time' => round($duration,5),
+                    'results' => $results,
+                    'SQL' => $sql,
+                );
+    }
+ 
+    function query($sql="",$params=false){
+        if (strlen($sql)==0){
+            $this->_displayBox("Can't execute an empty Query");
+            return;
         }
 
+        if($params!==FALSE){
+            $sql = $this->_parseQueryParams($sql,$params);
+        } 
+
+        $this->query_count++;
+        
+        $query_start_time = microtime(true); 
+        $result = mysqli_query($this->link, $sql); 
+        $query_duration = microtime(true)-$query_start_time;
+        
+        $this->_logQuery($sql, $query_duration, (int)$this->affected_rows() );
+
+        if(is_object($result) && $result!==null){
+            //return query result object
+            return new OBJ_mysql_result($sql,$result);
+        }else{  
+          
+            if($result===true){
+                //this query was successfull
+                if( preg_match('/^\s*"?(INSERT|UPDATE|DELETE|REPLACE)\s+/i', $sql) ){
+                    //was it an INSERT?
+                    if($this->insert_id()>0){
+                        return (int)$this->insert_id();
+                    }
+                    //was it an UPDATE or DELERE?
+                    if($this->affected_rows()>0){
+                        return (int)$this->affected_rows();   
+                    }   
+                    return true;
+                }else{
+                    return true;
+                }
+            }else{
+                //this query returned an error, we must display it
+                $this->_displayBox( mysqli_error($this->link) ); 
+            }
+        }  
     }
 
+    function insert($table="",$data=array()){
+        if(strlen($table)==0){
+            $this->_displayBox("invalid table name");
+            return false;    
+        }
+        if(count($data)==0){
+            $this->_displayBox("empty data to INSERT");
+            return false;    
+        } 
+
+        //extracting column names
+        $columns = array_keys($data);
+        foreach($columns as $k => $_key){
+            $columns[$k] = "`".$_key."`";
+        }
+        var_dump($columns);
+        $columns = implode(",",$columns); 
+        //extracting values
+        foreach($data as $k => $_value){
+            $data[$k] = $this->secure($_value);
+        }
+        $values = implode(",",$data);
+
+
+        $sql = "INSERT INTO `".$table."` ($columns) VALUES ($values);";
+       
+       return $this->query($sql);
+
+    }
+
+    private function _parseQueryParams($sql,$params){
+        
+        if (strpos($sql, "?") === FALSE){ //is there anything to parse?
+            return $sql;
+        }
+        if ( !is_array($params) ){ //conver to array
+            $params = array($params);
+        }
+
+        $parsed_sql = str_replace("?","{_?!?_}",$sql);
+        $k = 0;
+        while(strpos($parsed_sql, "{_?!?_}")>0){ 
+            $value = $this->secure($params[$k]); 
+            $parsed_sql = preg_replace("/(\{_\?\!\?_\})/",$value,$parsed_sql,1);
+            $k++;
+        } 
+        return $parsed_sql;
+    }
+
+
+    function secure($var){ 
+        if(is_object($var) && isset($var->scalar) && count((array)$var)==1){
+            $var = (string)$var->scalar;
+        }elseif(is_string($var)){
+            $var = trim($var);
+            $var = "'".$this->escape($var)."'";
+        }elseif(is_int($var)){
+            $var = intval((int)$var) ;
+        }elseif(is_float($var)){
+            $var = "'".round(floatval(str_replace(",",".",$item)),6)."'";
+        }elseif(is_bool($var)){ 
+            $var = (int)$var;
+        }
+        
+        $var = iconv("UTF-8", "UTF-8", $var);
+        return ($var != "") ? $var  : "NULL"; 
+    }
+
+    function escape($str){
+        $str = get_magic_quotes_gpc() ? stripslashes($str) : $str;
+        $str = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($str) : mysql_escape_string($str);
+        return (string)$str;
+    }
+
+    /**
+     * Closes the MySQLi Connection
+     */
     function close(){
-        mysqli_close($this->link);
+        if($this->link) mysqli_close($this->link);
+    }
+
+    function insert_id(){
+        return mysqli_insert_id($this->link);
+    }
+    function affected_rows(){
+        return mysqli_affected_rows($this->link);
+    }
+
+
+
+    /**
+     * __destruct magic method
+     *
+     * This will make sure that the connection is closed when the variable is unset() 
+     * 
+    */
+    function __destruct(){
+        $this->close(); 
+        return;
     }
 
     private function _displayBox($e){
@@ -107,16 +274,14 @@ Class OBJ_mysql{
         $box_border = $this->css_mysql_box_border;
         $box_bg = $this->css_mysql_box_bg;
 
-        echo "<div class='OBJ-mysql-box' style='boder:$box_border; background:$box_bg; padding:10px; margin:10px;'>";
+        echo "<div class='OBJ-mysql-box' style='border:$box_border; background:$box_bg; padding:10px; margin:10px;'>";
         echo "<b style='font-size:14px;'>MYSQL Error:</b> ";
+        echo "<code style='display:block;'>";
         echo $e;
-        echo "</div>";
-
-        $this->close();
+        echo "</code>";
+        echo "</div>"; 
         exit();
-    }
-
-    
+    } 
 
     private function _loadConfig($config){
         if(isset($config['hostname']) && !empty($config['hostname'])){
