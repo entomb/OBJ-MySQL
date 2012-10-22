@@ -201,6 +201,15 @@ Class OBJ_mysql{
 
     }
 
+    function update($table="",$data=array(),$where=array()){
+
+    }
+
+    function delete($table="",$where){
+        
+    }
+
+
     private function _parseQueryParams($sql,$params){
         
         if (strpos($sql, "?") === FALSE){ //is there anything to parse?
@@ -256,6 +265,7 @@ Class OBJ_mysql{
     function insert_id(){
         return mysqli_insert_id($this->link);
     }
+
     function affected_rows(){
         return mysqli_affected_rows($this->link);
     }
