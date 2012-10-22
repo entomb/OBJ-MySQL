@@ -70,6 +70,7 @@ Class OBJ_mysql{
 
     var $css_mysql_box_border = "3px solid orange";
     var $css_mysql_box_bg = "#FFCC66";
+    var $exit_on_error = true; 
 
 
     function OBJ_mysql($config=null){
@@ -80,9 +81,7 @@ Class OBJ_mysql{
     }
 
     function connect(){
-        if($this->connected){
-            return true;   
-        }
+        if($this->connected) return true;   
 
         $this->link = mysqli_connect(
                             $this->hostname,
@@ -274,6 +273,10 @@ Class OBJ_mysql{
         return;
     }
 
+    /**
+     * Displays a given error mensage and exits().
+     *
+    */
     private function _displayError($e){
 
         $box_border = $this->css_mysql_box_border;
@@ -285,7 +288,8 @@ Class OBJ_mysql{
         echo $e;
         echo "</code>";
         echo "</div>"; 
-        exit();
+        if($this->exit_on_error) exit();
+        
     } 
 
     private function _loadConfig($config){
@@ -303,6 +307,9 @@ Class OBJ_mysql{
         }
         if(isset($config['port']) && !empty($config['port'])){
             $this->port = $config['port'];
+        }
+        if(isset($config['exit_on_error']) && !empty($config['exit_on_error'])){
+            $this->exit_on_error = $config['exit_on_error'];
         }
     }
 
