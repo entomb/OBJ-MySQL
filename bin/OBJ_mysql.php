@@ -206,7 +206,7 @@ Class OBJ_mysql{
     }
 
     function delete($table="",$where){
-        
+
     }
 
 
@@ -237,7 +237,7 @@ Class OBJ_mysql{
             $var = trim($var);
             $var = "'".$this->escape($var)."'";
         }elseif(is_int($var)){
-            $var = intval((int)$var) ;
+            $var = intval((int)$var);
         }elseif(is_float($var)){
             $var = "'".round(floatval(str_replace(",",".",$item)),6)."'";
         }elseif(is_bool($var)){ 
@@ -320,6 +320,9 @@ Class OBJ_mysql{
         }
         if(isset($config['exit_on_error']) && !empty($config['exit_on_error'])){
             $this->exit_on_error = $config['exit_on_error'];
+        }
+        if(isset($config['charset']) && !empty($config['charset'])){
+            $this->charset = $config['charset'];
         }
     }
 
