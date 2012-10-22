@@ -93,7 +93,7 @@ Class OBJ_mysql{
                         );
 
         if($e = $this->connect_error){
-            $this->_displayBox($e);
+            $this->_displayError($e);
         }else{
             $this->connected = true;
         }
@@ -105,8 +105,8 @@ Class OBJ_mysql{
         mysqli_set_charset($this->link,$charset);
     }
 
-    function reconnect($config=null){
-
+    function reconnect($config=null){ 
+        $this->close();
         $this->_loadConfig($config);
         $this->connect();
     }
@@ -124,8 +124,10 @@ Class OBJ_mysql{
     }
  
     function query($sql="",$params=false){
+        if(!$this->connected) return false;
+
         if (strlen($sql)==0){
-            $this->_displayBox("Can't execute an empty Query");
+            $this->_displayError("Can't execute an empty Query");
             return;
         }
 
@@ -163,18 +165,20 @@ Class OBJ_mysql{
                 }
             }else{
                 //this query returned an error, we must display it
-                $this->_displayBox( mysqli_error($this->link) ); 
+                $this->_displayError( mysqli_error($this->link) ); 
             }
         }  
     }
 
     function insert($table="",$data=array()){
+        if(!$this->connected) return false;
+
         if(strlen($table)==0){
-            $this->_displayBox("invalid table name");
+            $this->_displayError("invalid table name");
             return false;    
         }
         if(count($data)==0){
-            $this->_displayBox("empty data to INSERT");
+            $this->_displayError("empty data to INSERT");
             return false;    
         } 
 
@@ -246,6 +250,7 @@ Class OBJ_mysql{
      * Closes the MySQLi Connection
      */
     function close(){
+        $this->connected = false;
         if($this->link) mysqli_close($this->link);
     }
 
@@ -269,7 +274,7 @@ Class OBJ_mysql{
         return;
     }
 
-    private function _displayBox($e){
+    private function _displayError($e){
 
         $box_border = $this->css_mysql_box_border;
         $box_bg = $this->css_mysql_box_bg;
