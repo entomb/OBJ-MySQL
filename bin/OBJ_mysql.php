@@ -186,7 +186,7 @@ Class OBJ_mysql{
         foreach($columns as $k => $_key){
             $columns[$k] = "`".$_key."`";
         }
-        var_dump($columns);
+
         $columns = implode(",",$columns); 
         //extracting values
         foreach($data as $k => $_value){
@@ -201,15 +201,82 @@ Class OBJ_mysql{
 
     }
 
-    function update($table="",$data=array(),$where=array()){
+    function update($table="",$data=array(),$where="1=1"){
+        if(!$this->connected) return false;
+
+        if(strlen($table)==0){
+            $this->_displayError("invalid table name");
+            return false;    
+        }
+        if(count($data)==0){
+            $this->_displayError("empty data to UPDATE");
+            return false;    
+        } 
+
+        $SET = $this->_parseArrayPair($data);
+
+        if(is_string($where)){
+            $WHERE = $this->secure($where);
+        }else(is_array($where)){
+            $WHERE = $this->_parseArrayPair($where,"AND");
+        }
+
+        $sql = "UPDATE $table SET ($SET) WHERE ($WHERE);";
+
+        return $this->query($sql);
 
     }
 
-    function delete($table="",$where){
+    function delete($table="",$where="1=1"){
+        if(!$this->connected) return false;
+
+        if(strlen($table)==0){
+            $this->_displayError("invalid table name");
+            return false;    
+        }
+
+        if(is_string($where)){
+            $WHERE = $this->secure($where);
+        }else(is_array($where)){
+            $WHERE = $this->_parseArrayPair($where,"AND");
+        }
+
+        $sql = "DELETE FROM $table WHERE ($WHERE);"
+
+        return $this->query($sql);
 
     }
 
+     /**
+     * Parses arrays with value pairs and generates SQL to use in queries
+     *
+     * @access private
+     * @param $Array array The value pair to parse
+     * @param $glue string the glue for the implode(), can be "," for SETs or "AND" for WHEREs
+     *
+     */
+    private function _parseArrayPair($Array,$glue=","){
+        $sql = "";
+        $pairs = array();
+        if(!empty($Array)){
+            foreach($Array as $_key => $_value){
+                $pairs[] = " `".$key."` = ".$this->secure($_value)." ";
+            }
+            $pairs = implode($glue, $pairs);
+        }
 
+        return $sql;
+    }
+
+    /**
+     * Parsing query parameters replacing any "?" with a given $param
+     *
+     * @access private
+     * @param $sql string SQL query to parse
+     * @param $params array Array with values to place on any "?" found
+     * @return string Parsed SQL string
+     *
+     */
     private function _parseQueryParams($sql,$params){
         
         if (strpos($sql, "?") === FALSE){ //is there anything to parse?
@@ -229,7 +296,24 @@ Class OBJ_mysql{
         return $parsed_sql;
     }
 
-
+    /**
+     * Generates secure values depending on the type of the input.
+     *
+     * This "smart" function will escape and secure your data depending on its type. 
+     * here are some things you need to know:
+     *
+     ** Will send NULL if $var is empty
+     ** Will treat bools as 0 or 1
+     ** Will escape any string value
+     ** Will round(6) any float value. will also replace "," for "." 
+     ** WARNING: Will treat strings cast as an object as RAW MySQL
+     ** to use this send anything like this (object)"NOW()" and it will bypass the escaping.
+     ** make sure you only use this when you need to execute raw MySQL functions like NOW() or ENCODE() 
+     *
+     * @param $var mixed the value to secure
+     * @return string Secure value
+     *
+    */
     function secure($var){ 
         if(is_object($var) && isset($var->scalar) && count((array)$var)==1){
             $var = (string)$var->scalar;
@@ -248,6 +332,10 @@ Class OBJ_mysql{
         return ($var != "") ? $var  : "NULL"; 
     }
 
+    /**
+     * escapes any given string
+     *
+    */
     function escape($str){
         $str = get_magic_quotes_gpc() ? stripslashes($str) : $str;
         $str = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($str) : mysql_escape_string($str);
@@ -262,10 +350,15 @@ Class OBJ_mysql{
         if($this->link) mysqli_close($this->link);
     }
 
+    /**
+     * returns mysqli_insert_id()
+     */
     function insert_id(){
         return mysqli_insert_id($this->link);
     }
-
+    /**
+     * returns mysqli_affected_rows()
+     */
     function affected_rows(){
         return mysqli_affected_rows($this->link);
     }
@@ -285,7 +378,6 @@ Class OBJ_mysql{
 
     /**
      * Displays a given error mensage and exits().
-     *
     */
     private function _displayError($e){
 
@@ -302,6 +394,10 @@ Class OBJ_mysql{
         
     } 
 
+    /**
+     * Loads a configuration
+     *
+    */
     private function _loadConfig($config){
         if(isset($config['hostname']) && !empty($config['hostname'])){
             $this->hostname = $config['hostname'];
