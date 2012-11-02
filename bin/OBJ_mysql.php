@@ -112,8 +112,8 @@ Class OBJ_mysql{
                             $this->port
                         );
 
-        if($e = $this->connect_error){
-            $this->_displayError($e);
+        if(!($this->link)){
+            $this->_displayError("Error connecting to mysql server");
         }else{
             $this->connected = true;
         }
@@ -260,6 +260,44 @@ Class OBJ_mysql{
     }
 
     /**
+     * Creates and executes a replace statement
+     * @param  string $table target table
+     * @param  array  $data  data to insert 
+     * @return mixed Affected rows or null if the query failed
+     */
+    function replace($table="",$data=array()){
+        if(!$this->connected) return false;
+
+        if(strlen($table)==0){
+            $this->_displayError("invalid table name");
+            return false;    
+        }
+        if(count($data)==0){
+            $this->_displayError("empty data to INSERT");
+            return false;    
+        } 
+
+        //extracting column names
+        $columns = array_keys($data);
+        foreach($columns as $k => $_key){
+            $columns[$k] = "`".$_key."`";
+        }
+
+        $columns = implode(",",$columns); 
+        //extracting values
+        foreach($data as $k => $_value){
+            $data[$k] = $this->secure($_value);
+        }
+        $values = implode(",",$data);
+
+
+        $sql = "REPLACE INTO `".$table."` ($columns) VALUES ($values);";
+       
+       return $this->query($sql);
+
+    }
+
+    /**
      * Creates and executes an update statement
      * @param  string $table target table
      * @param  array  $data  data to update
@@ -286,7 +324,7 @@ Class OBJ_mysql{
             $WHERE = $this->_parseArrayPair($where,"AND");
         }
 
-        $sql = "UPDATE $table SET ($SET) WHERE ($WHERE);";
+        $sql = "UPDATE $table SET $SET WHERE ($WHERE);";
 
         return $this->query($sql);
 
@@ -326,14 +364,14 @@ Class OBJ_mysql{
      * @param $glue string the glue for the implode(), can be "," for SETs or "AND" for WHEREs
      *
      */
-    private function _parseArrayPair($Array,$glue=","){
+    private function _parseArrayPair($ArrayPair,$glue=","){
         $sql = "";
         $pairs = array();
-        if(!empty($Array)){
-            foreach($Array as $_key => $_value){
-                $pairs[] = " `".$key."` = ".$this->secure($_value)." ";
+        if(!empty($ArrayPair)){
+            foreach($ArrayPair as $_key => $_value){
+                $pairs[] = " `".$_key."` = ".$this->secure($_value)." ";
             }
-            $pairs = implode($glue, $pairs);
+            $sql = implode($glue, $pairs);
         }
 
         return $sql;
