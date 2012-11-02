@@ -52,9 +52,7 @@ include("OBJ_mysql_result.php");
 */
 Class OBJ_mysql{
 
-    /**
-     * Default configuration variables
-    */
+    // Default configuration variables
     private $hostname = "";
     private $username = "";
     private $password = "";
@@ -72,7 +70,26 @@ Class OBJ_mysql{
     var $css_mysql_box_bg = "#FFCC66";
     var $exit_on_error = true; 
 
-
+    /**
+     * OBJ_mysql constructor
+     *
+     * This is the config array template:
+     *
+     **  $config["hostname"]  = "YOUR_HOST";
+     **  $config["database"]  = "YOUR_DATABASE_NAME";
+     **  $config["username"]  = "USER_NAME";
+     **  $config["password"]  = "PASSWORD";
+     *
+     * non mandatory configurations
+     * 
+     **  $config["port"]      = "PORT"; //defaults to 3306
+     **  $config["charset"]    = "CHARSET"; //defaults to UTF-8
+     **  $config["exit_on_error"] = "TRUE|FALSE"; //defaults to true
+     * 
+     * 
+     * @param array $config config array
+     * 
+     */
     function OBJ_mysql($config=null){
         $this->connected = false;
         $this->_loadConfig($config);
@@ -80,6 +97,10 @@ Class OBJ_mysql{
         $this->set_charset($this->charset);
     }
 
+    /**
+     * Establishes the connection
+     * @return boolean connection status
+     */
     function connect(){
         if($this->connected) return true;   
 
@@ -97,23 +118,46 @@ Class OBJ_mysql{
             $this->connected = true;
         }
 
-
+         return $this->is_ready();
     }
 
+    /**
+     * Sets the connection charset
+     * @param string $charset default is UTF8
+     */
     function set_charset($charset){
+        $this->charset = $charset;
         mysqli_set_charset($this->link,$charset);
     }
 
+    /**
+     * Restarts a connection with diferent connection array if given
+     * @param  array $config configuration array
+     * @return boolean connection status
+     */
     function reconnect($config=null){ 
         $this->close();
         $this->_loadConfig($config);
         $this->connect();
+        return $this->is_ready();
     }
 
-    function ready(){
+
+    /**
+     * checks if the connection is ready
+     * @return boolean connection status
+     */
+    function is_ready(){
         return ($this->connected) ? true : false;
     }
 
+    /**
+     * Logs a query execution
+     * @param  string $sql      [description]
+     * @param  int $duration [description]
+     * @param  int $results  [description]
+     * @return void
+     */
     private function _logQuery($sql,$duration,$results){
         $this->LOG[] = array(
                     'time' => round($duration,5),
@@ -121,7 +165,15 @@ Class OBJ_mysql{
                     'SQL' => $sql,
                 );
     }
- 
+    
+
+    /**
+     * Mysql Query
+     * @param  string  $sql    the SQL to execute
+     * @param  arrat $params any array pair of parameters
+     * @return Object OBJ_mysql_result() or false if the query failed
+     * @see  OBJ_mysql_result()
+     */
     function query($sql="",$params=false){
         if(!$this->connected) return false;
 
@@ -169,6 +221,12 @@ Class OBJ_mysql{
         }  
     }
 
+    /**
+     * Creates and executes an insert statement
+     * @param  string $table target table
+     * @param  array  $data  data to insert 
+     * @return mixed Affected rows or null if the query failed
+     */
     function insert($table="",$data=array()){
         if(!$this->connected) return false;
 
@@ -201,6 +259,13 @@ Class OBJ_mysql{
 
     }
 
+    /**
+     * Creates and executes an update statement
+     * @param  string $table target table
+     * @param  array  $data  data to update
+     * @param  string|array $where where clause
+     * @return mixed Affected rows or null if the query failed
+     */
     function update($table="",$data=array(),$where="1=1"){
         if(!$this->connected) return false;
 
@@ -217,7 +282,7 @@ Class OBJ_mysql{
 
         if(is_string($where)){
             $WHERE = $this->secure($where);
-        }else(is_array($where)){
+        }elseif(is_array($where)){
             $WHERE = $this->_parseArrayPair($where,"AND");
         }
 
@@ -227,6 +292,12 @@ Class OBJ_mysql{
 
     }
 
+    /**
+     * Creates and executes a delete statement
+     * @param  string $table the target table 
+     * @param  string|array $where the where clause
+     * @return mixed Affected rows or null if the query failed
+     */
     function delete($table="",$where="1=1"){
         if(!$this->connected) return false;
 
@@ -237,11 +308,11 @@ Class OBJ_mysql{
 
         if(is_string($where)){
             $WHERE = $this->secure($where);
-        }else(is_array($where)){
+        }elseif(is_array($where)){
             $WHERE = $this->_parseArrayPair($where,"AND");
         }
 
-        $sql = "DELETE FROM $table WHERE ($WHERE);"
+        $sql = "DELETE FROM $table WHERE ($WHERE);";
 
         return $this->query($sql);
 
