@@ -175,7 +175,7 @@ Class OBJ_mysql{
      * @see  OBJ_mysql_result()
      */
     function query($sql="",$params=false){
-        if(!$this->connected) return false;
+        if(!$this->is_ready()) return false;
 
         if (strlen($sql)==0){
             $this->_displayError("Can't execute an empty Query");
@@ -227,8 +227,7 @@ Class OBJ_mysql{
      * @param  array  $data  data to insert 
      * @return mixed Affected rows or null if the query failed
      */
-    function insert($table="",$data=array()){
-        if(!$this->connected) return false;
+    function insert($table="",$data=array()){ 
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
@@ -265,8 +264,7 @@ Class OBJ_mysql{
      * @param  array  $data  data to insert 
      * @return mixed Affected rows or null if the query failed
      */
-    function replace($table="",$data=array()){
-        if(!$this->connected) return false;
+    function replace($table="",$data=array()){ 
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
@@ -304,8 +302,7 @@ Class OBJ_mysql{
      * @param  string|array $where where clause
      * @return mixed Affected rows or null if the query failed
      */
-    function update($table="",$data=array(),$where="1=1"){
-        if(!$this->connected) return false;
+    function update($table="",$data=array(),$where="1=1"){ 
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
@@ -336,8 +333,7 @@ Class OBJ_mysql{
      * @param  string|array $where the where clause
      * @return mixed Affected rows or null if the query failed
      */
-    function delete($table="",$where="1=1"){
-        if(!$this->connected) return false;
+    function delete($table="",$where="1=1"){ 
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
@@ -447,7 +443,7 @@ Class OBJ_mysql{
     */
     function escape($str){
         $str = get_magic_quotes_gpc() ? stripslashes($str) : $str;
-        $str = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($str) : mysql_escape_string($str);
+        $str = function_exists("mysqli_real_escape_string") ? mysqli_real_escape_string($this->link,$str) : mysqli_escape_string($str);
         return (string)$str;
     }
 
