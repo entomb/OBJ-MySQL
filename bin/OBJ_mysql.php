@@ -7,21 +7,8 @@
  * @author Jonathan Tavares <the.entomb@gmail.com>
  * @license GNU General Public License, version 3 
  * @link https://github.com/entomb/OBJ-MySQL GitHub Source
+ * @filesource
  *
- * Copyright (C) 2012  Jonathan Tavares <the.entomb@gmail.com>
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
 */
 
@@ -33,14 +20,15 @@ include("OBJ_mysql_result.php");
  * OBJ-mysql - Database Abstraction Class
  *
  *
- *  Config DATA:
- *
- *  $database_info["hostname"]  = "YOUR_HOST";
- *  $database_info["database"]  = "YOUR_DATABASE_NAME";
- *  $database_info["username"]  = "USER_NAME";
- *  $database_info["password"]  = "PASSWORD";
- *  $database_info["port"]      = "PORT";
- *  $database_info["socket"]    = "SOCKET";
+ **  Config DATA:
+ **
+ **  $database_info["hostname"]  = "YOUR_HOST";
+ **  $database_info["database"]  = "YOUR_DATABASE_NAME";
+ **  $database_info["username"]  = "USER_NAME";
+ **  $database_info["password"]  = "PASSWORD";
+ **  $database_info["port"]      = "PORT";
+ **  $database_info["charset"]    = "CHARSET";
+ **  $database_info["exit_on_error"] = TRUE;
  *
  *
  * @package Database
@@ -102,7 +90,7 @@ Class OBJ_mysql{
      * @return boolean connection status
      */
     function connect(){
-        if($this->connected) return true;   
+        if($this->is_ready()) return true;   
 
         $this->link = mysqli_connect(
                             $this->hostname,
@@ -153,9 +141,9 @@ Class OBJ_mysql{
 
     /**
      * Logs a query execution
-     * @param  string $sql      [description]
-     * @param  int $duration [description]
-     * @param  int $results  [description]
+     * @param  string $sql   SQL query
+     * @param  int $duration execution time
+     * @param  int $results  number of affected_rows
      * @return void
      */
     private function _logQuery($sql,$duration,$results){
@@ -169,8 +157,8 @@ Class OBJ_mysql{
 
     /**
      * Mysql Query
-     * @param  string  $sql    the SQL to execute
-     * @param  arrat $params any array pair of parameters
+     * @param  string $sql the SQL to execute
+     * @param  array $params any array pair of parameters
      * @return Object OBJ_mysql_result() or false if the query failed
      * @see  OBJ_mysql_result()
      */
@@ -352,12 +340,12 @@ Class OBJ_mysql{
 
     }
 
-     /**
+    /**
      * Parses arrays with value pairs and generates SQL to use in queries
      *
      * @access private
-     * @param $Array array The value pair to parse
-     * @param $glue string the glue for the implode(), can be "," for SETs or "AND" for WHEREs
+     * @param  array $ArrayPair The value pair to parse
+     * @param  string $glue the glue for the implode(), can be "," for SETs or "AND" for WHEREs
      *
      */
     private function _parseArrayPair($ArrayPair,$glue=","){
@@ -377,8 +365,8 @@ Class OBJ_mysql{
      * Parsing query parameters replacing any "?" with a given $param
      *
      * @access private
-     * @param $sql string SQL query to parse
-     * @param $params array Array with values to place on any "?" found
+     * @param  string $sql SQL query to parse
+     * @param  array $params Array with values to place on any "?" found
      * @return string Parsed SQL string
      *
      */
@@ -415,7 +403,7 @@ Class OBJ_mysql{
      ** to use this send anything like this (object)"NOW()" and it will bypass the escaping.
      ** make sure you only use this when you need to execute raw MySQL functions like NOW() or ENCODE() 
      *
-     * @param $var mixed the value to secure
+     * @param mixed $var the value to secure
      * @return string Secure value
      *
     */
