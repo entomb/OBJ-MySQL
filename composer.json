@@ -1,5 +1,5 @@
 {
-    "name": "entomb/OBJ_MySQL",
+    "name": "entomb/obj_mysql",
     "type": "library",
     "version": "0.8.1-alfa",
     "description": "MySQL abstraction layer",
