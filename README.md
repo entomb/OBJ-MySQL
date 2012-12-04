@@ -1,7 +1,7 @@
 OBJ-MySQL
 =========
 
-OBJ MySQL is a simple MySQL Abstraction Layer for PHP>5.2 that provides a simple and _secure_ interaction with you database using mysqli_* functions at its core.
+OBJ MySQL is a simple MySQL Abstraction Layer for PHP>5.2 that provides a simple and _secure_ interaction with your database using mysqli_* functions at its core.
 
 _This project is under construction, any feedback would be appreciated_
 
