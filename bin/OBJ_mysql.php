@@ -353,7 +353,25 @@ Class OBJ_mysql{
         $pairs = array();
         if(!empty($ArrayPair)){
             foreach($ArrayPair as $_key => $_value){
-                $pairs[] = " `".$_key."` = ".$this->secure($_value)." ";
+                $_connector = "=";
+                if(strpos($_key," IS")!==false){
+                    $_connector = " IS";
+                }
+                if(strpos($_key," IN")!==false){
+                    $_connector = " IN";
+                }
+                if(strpos($_key," >=")!==false){
+                    $_connector = " >=";
+                }
+                if(strpos($_key," <=")!==false){
+                    $_connector = " <=";
+                }
+                if(strpos($_key," LIKE")!==false){
+                    $_connector = " LIKE";
+                }
+
+                $pairs[] = " `".str_replace($_connector,"",$_key)."` $_connector ".$this->secure($_value)." ";
+
             }
             $sql = implode($glue, $pairs);
         }
