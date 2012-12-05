@@ -3,6 +3,8 @@ OBJ-MySQL
 
 OBJ MySQL is a simple MySQL Abstraction Layer for PHP>5.2 that provides a simple and _secure_ interaction with your database using mysqli_* functions at its core.
 
+OBJ-MySQL is perfect for small scale applications such as cron jobs, facebook canvas campaigns or micro frameworks or sites.
+
 _This project is under construction, any feedback would be appreciated_
 
 
@@ -11,7 +13,7 @@ Author: [Jonathan Tavares](https://github.com/entomb)
 
 ##Get OBJ_MySQL
 You can download it from here, or require it using [composer](https://packagist.org/packages/entomb/obj_mysql).
-but the simplest way is to this is cloning this repo
+The simplest way is to to clone this repo
 
 ```bash
 $ git clone https://github.com/entomb/OBJ-MySQL.git
@@ -53,7 +55,7 @@ you can have multiple isntances of the Class each one with its own $config (one 
  
 ##Using OBJ_MySQL
 
-there are numberous ways os using this library, here are some examples of the most common methods
+there are numerous ways of using this library, here are some examples of the most common methods
 
 ###Selecting and retrieving data from a table
 
