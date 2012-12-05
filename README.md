@@ -155,7 +155,7 @@ $Data = $Result->fetchColumn(String $key, String $Value);  // Fetch data as a ke
 ```
 
 ####Iterations
-To iterate a resultset you can use any fetch() method this way
+To iterate a resultset you can use any fetch() method listed above
 
 ```php
   $Result = $db->query("SELECT * FROM users");
@@ -167,7 +167,7 @@ To iterate a resultset you can use any fetch() method this way
   }
   
   //using foreach
-  froeach( $Result->fetchAll() as $row ){
+  foreach( $Result->fetchAll() as $row ){
     echo $row->name;
     echo $row->email;
   }
