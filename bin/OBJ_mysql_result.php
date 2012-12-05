@@ -274,8 +274,8 @@ Class OBJ_mysql_result{
      * Alias for fetchColumn() 
      * @see OBJ_mysql_result::fetchColumn()
     */
-    function getColumn($key,$var){
-        return $this->fetchColumn($key,$var); 
+    function getColumn($key){
+        return $this->fetchColumn($key); 
     }
 
 }
