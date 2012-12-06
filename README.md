@@ -155,7 +155,7 @@ $Data = $Result->fetchColumn(String $key, String $Value);  // Fetch data as a ke
 ```
 ####Aliases
 ```php
-  $db->get()                  // Alias for $db->fetchAll(); 
+  $db->get()                  // Alias for $db->fetch(); 
   $db->getAll()               // Alias for $db->fetchAll(); 
   $db->getObject()            // Alias for $db->fetchAllObject(); 
   $db->getArray()             // Alias for $db->fetchAllArray(); 
