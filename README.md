@@ -13,7 +13,15 @@ Author: [Jonathan Tavares](https://github.com/entomb)
 
 ##Get OBJ_MySQL
 You can download it from here, or require it using [composer](https://packagist.org/packages/entomb/obj_mysql).
-The simplest way is to to clone this repo
+```json
+{
+    "require": {
+		"entomb/obj_mysql": "dev-master"
+	}
+}
+```
+
+Or you can require it by cloning this repo
 
 ```bash
 $ git clone https://github.com/entomb/OBJ-MySQL.git
