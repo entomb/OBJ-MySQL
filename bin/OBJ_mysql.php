@@ -29,6 +29,7 @@ include("OBJ_mysql_result.php");
  **  $database_info["port"]      = "PORT";
  **  $database_info["charset"]    = "CHARSET";
  **  $database_info["exit_on_error"] = TRUE;
+ **  $database_info["echo_on_error"] = TRUE;
  *
  *
  * @package Database
@@ -51,12 +52,14 @@ Class OBJ_mysql{
     protected $link;
     protected $LOG;
     protected $connected = false;
+    private $_errors = array();
 
     var $query_count = 0;
 
     var $css_mysql_box_border = "3px solid orange";
     var $css_mysql_box_bg = "#FFCC66";
     var $exit_on_error = true; 
+    var $echo_on_error = true; 
 
     /**
      * OBJ_mysql constructor
@@ -73,6 +76,7 @@ Class OBJ_mysql{
      **  $config["port"]      = "PORT"; //defaults to 3306
      **  $config["charset"]    = "CHARSET"; //defaults to UTF-8
      **  $config["exit_on_error"] = "TRUE|FALSE"; //defaults to true
+     **  $config["echo_on_error"] = "TRUE|FALSE"; //defaults to true
      * 
      * 
      * @param array $config config array
@@ -474,7 +478,29 @@ Class OBJ_mysql{
         return mysqli_affected_rows($this->link);
     }
 
+    /**
+     * Returns all erros occurrend during the execution
+     * @return array MySQL Errors 
+     */
+    function errors(){
+        return count($this->_errors)>0 ? $this->_errors : false;
+    }
 
+    /**
+     * Return last error occurred
+     * @return string Mysql Error
+     */
+    function lastError(){
+        return count($this->_errors)>0 ? end($this->_errors) : false;
+    }
+
+    /**
+     * Returns the query log
+     * @return array Log entries
+     */
+    function log(){
+        return $this->LOG;
+    }
 
     /**
      * __destruct magic method
@@ -492,16 +518,22 @@ Class OBJ_mysql{
     */
     private function _displayError($e){
 
-        $box_border = $this->css_mysql_box_border;
-        $box_bg = $this->css_mysql_box_bg;
+        $this->_errors[] = $e;
 
-        echo "<div class='OBJ-mysql-box' style='border:$box_border; background:$box_bg; padding:10px; margin:10px;'>";
-        echo "<b style='font-size:14px;'>MYSQL Error:</b> ";
-        echo "<code style='display:block;'>";
-        echo $e;
-        echo "</code>";
-        echo "</div>"; 
-        if($this->exit_on_error) exit();
+        if($this->echo_on_error){
+            $box_border = $this->css_mysql_box_border;
+            $box_bg = $this->css_mysql_box_bg;
+            echo "<div class='OBJ-mysql-box' style='border:$box_border; background:$box_bg; padding:10px; margin:10px;'>";
+            echo "<b style='font-size:14px;'>MYSQL Error:</b> ";
+            echo "<code style='display:block;'>";
+            echo $e;
+            echo "</code>";
+            echo "</div>"; 
+        }
+        
+        if($this->exit_on_error){
+            exit();
+        }
         
     } 
 
@@ -525,8 +557,11 @@ Class OBJ_mysql{
         if(isset($config['port']) && !empty($config['port'])){
             $this->port = $config['port'];
         }
-        if(isset($config['exit_on_error']) && !empty($config['exit_on_error'])){
+        if(isset($config['exit_on_error'])){
             $this->exit_on_error = $config['exit_on_error'];
+        }
+        if(isset($config['echo_on_error'])){
+            $this->echo_on_error = $config['echo_on_error'];
         }
         if(isset($config['charset']) && !empty($config['charset'])){
             $this->charset = $config['charset'];
