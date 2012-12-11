@@ -7,8 +7,10 @@ OBJ-MySQL is perfect for small scale applications such as cron jobs, facebook ca
 
 _This project is under construction, any feedback would be appreciated_
 
-
 Author: [Jonathan Tavares](https://github.com/entomb)
+
+**checkout the [changelog](https://github.com/entomb/OBJ-MySQL/wiki/changelog) for info on the lattest changes**
+
 
 
 ##Get OBJ_MySQL
