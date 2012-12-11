@@ -400,12 +400,12 @@ Class OBJ_mysql{
         if ( !is_array($params) ){ //conver to array
             $params = array($params);
         }
-
-        $parsed_sql = str_replace("?","{_?!?_}",$sql);
+        $parse_key = md5(uniqid(time(),true));
+        $parsed_sql = str_replace("?",$parse_key,$sql);
         $k = 0;
-        while(strpos($parsed_sql, "{_?!?_}")>0){ 
+        while(strpos($parsed_sql, $parse_key)>0){ 
             $value = $this->secure($params[$k]); 
-            $parsed_sql = preg_replace("/(\{_\?\!\?_\})/",$value,$parsed_sql,1);
+            $parsed_sql = preg_replace("/$parse_key/",$value,$parsed_sql,1);
             $k++;
         } 
         return $parsed_sql;
@@ -441,6 +441,8 @@ Class OBJ_mysql{
             $var = "'".round(floatval(str_replace(",",".",$item)),6)."'";
         }elseif(is_bool($var)){ 
             $var = (int)$var;
+        }elseif(is_array($var)){
+            $var = NULL;
         }
         
         $var = iconv("UTF-8", "UTF-8", $var);
