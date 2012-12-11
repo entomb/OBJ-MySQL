@@ -184,6 +184,25 @@ To iterate a resultset you can use any fetch() method listed above
   
 ```
 
+####Logging and Errors
+
+Showing the query log. the log comes with the SQL executed, the execution time and the result row count (if any)
+```php
+
+  print_r($db->log());
+  
+```
+
+to debug mysql errors:
+
+use `$db->errors()` to fetch all errors (returns false if no errors) or `$db->lastError()` for information on the last error.
+
+```php
+  if( $db->errors() ){
+      echo $db->lastError();
+  }
+```
+
 
  
 
