@@ -174,7 +174,7 @@ Class OBJ_mysql{
             return;
         }
 
-        if($params!==FALSE){
+        if($params!==FALSE && is_array($params)){
             $sql = $this->_parseQueryParams($sql,$params);
         } 
 
@@ -308,13 +308,13 @@ Class OBJ_mysql{
         $SET = $this->_parseArrayPair($data);
 
         if(is_string($where)){
-            $WHERE = $this->secure($where);
+            $WHERE = ($where);
         }elseif(is_array($where)){
             $WHERE = $this->_parseArrayPair($where,"AND");
         }
 
         $sql = "UPDATE $table SET $SET WHERE ($WHERE);";
-
+        
         return $this->query($sql);
 
     }
@@ -333,7 +333,7 @@ Class OBJ_mysql{
         }
 
         if(is_string($where)){
-            $WHERE = $this->secure($where);
+            $WHERE = ($where);
         }elseif(is_array($where)){
             $WHERE = $this->_parseArrayPair($where,"AND");
         }
