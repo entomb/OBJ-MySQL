@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Obj-mysql by entomb</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/entomb/OBJ-MySQL">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/entomb/OBJ-MySQL/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/entomb/OBJ-MySQL/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Obj-mysql</h1>
+          <p>Simple MySQL Abstraction Layer and mysqli_ result wrapper</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/entomb">entomb</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>OBJ-MySQL</h1>
+
+<p>OBJ MySQL is a simple MySQL Abstraction Layer for PHP&gt;5.2 that provides a simple and <em>secure</em> interaction with your database using mysqli_* functions at its core.</p>
+
+<p>OBJ-MySQL is perfect for small scale applications such as cron jobs, facebook canvas campaigns or micro frameworks or sites.</p>
+
+<p><em>This project is under construction, any feedback would be appreciated</em></p>
+
+<p>Author: <a href="https://github.com/entomb">Jonathan Tavares</a></p>
+
+<p><strong>checkout the <a href="https://github.com/entomb/OBJ-MySQL/wiki/changelog">changelog</a> for info on the lattest changes</strong></p>
+
+<h2>Get OBJ_MySQL</h2>
+
+<p>You can download it from here, or require it using <a href="https://packagist.org/packages/entomb/obj_mysql">composer</a>.</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"entomb/obj_mysql"</span><span class="p">:</span> <span class="s2">"dev-master"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Or you can require it by cloning this repo</p>
+
+<div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/entomb/OBJ-MySQL.git
+</pre></div>
+
+<p>if you are already using GIT on you project you can add it as a submodule</p>
+
+<div class="highlight"><pre><span class="nv">$ </span>git submodule add https://github.com/entomb/OBJ-MySQL.git libs/db
+</pre></div>
+
+<h2>Starting the driver</h2>
+
+<p>To start the db driver you must include the main class file and pass the '$config' array described bellow. 
+you can have multiple isntances of the Class each one with its own $config (one for Reads and one for Writes for example).</p>
+
+<div class="highlight"><pre>    <span class="c1">//include de main OBJ_mysql class file</span>
+    <span class="k">include</span><span class="p">(</span><span class="s2">"bin/OBJ_mysql.php"</span><span class="p">);</span>
+
+    <span class="c1">//configuration array </span>
+    <span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">();</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"hostname"</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">"YOUR_HOST"</span><span class="p">;</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"database"</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">"YOUR_DATABASE_NAME"</span><span class="p">;</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"username"</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">"USER_NAME"</span><span class="p">;</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"password"</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">"PASSWORD"</span><span class="p">;</span>
+
+    <span class="c1">//other configurations</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span>      <span class="o">=</span> <span class="s2">"PORT"</span><span class="p">;</span> <span class="c1">//defaults to 3306</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"charset"</span><span class="p">]</span>    <span class="o">=</span> <span class="s2">"CHARSET"</span><span class="p">;</span> <span class="c1">//defaults to UTF-8</span>
+    <span class="nv">$config</span><span class="p">[</span><span class="s2">"exit_on_error"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"TRUE|FALSE"</span><span class="p">;</span> <span class="c1">//defaults to true</span>
+
+    <span class="c1">//class instantiation</span>
+    <span class="nv">$db</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OBJ_mysql</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+
+</pre></div>
+
+<h2>Using OBJ_MySQL</h2>
+
+<p>there are numerous ways of using this library, here are some examples of the most common methods</p>
+
+<h3>Selecting and retrieving data from a table</h3>
+
+<div class="highlight"><pre>  <span class="nv">$Result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">"SELECT * FROM users"</span><span class="p">);</span>
+  <span class="nv">$Users</span>  <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchALL</span><span class="p">();</span>
+</pre></div>
+
+<h3>Inserting data on a table</h3>
+
+<p>to manipulate tables you have the most important methods wrapped, 
+they all work the same way: parsing arrays of key/value pairs and forming a safe query</p>
+
+<p>the methods are:</p>
+
+<div class="highlight"><pre>  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span> <span class="nx">String</span> <span class="nv">$Table</span><span class="p">,</span> <span class="k">Array</span> <span class="nv">$Data</span><span class="p">);</span> <span class="c1">//generates an INSERT query</span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">replace</span><span class="p">(</span><span class="nx">String</span> <span class="nv">$Table</span><span class="p">,</span> <span class="k">Array</span> <span class="nv">$Data</span><span class="p">);</span> <span class="c1">//generates an INSERT OR UPDATE query</span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">update</span><span class="p">(</span> <span class="nx">String</span> <span class="nv">$Table</span><span class="p">,</span> <span class="k">Array</span> <span class="nv">$Data</span><span class="p">,</span> <span class="k">Array</span> <span class="nv">$Where</span><span class="p">);</span> <span class="c1">//generates an UPDATE query</span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">delete</span><span class="p">(</span> <span class="nx">String</span> <span class="nv">$Table</span><span class="p">,</span> <span class="k">Array</span> <span class="nv">$Where</span><span class="p">);</span> <span class="c1">//generates a DELETE query</span>
+</pre></div>
+
+<p>All methods will return the resulting <code>mysqli_insert_id()</code> or true/false depending on context. 
+The correct approach if to allways check if they executed as success is allways returned</p>
+
+<div class="highlight"><pre>  <span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">delete</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'user_id'</span> <span class="o">=&gt;</span> <span class="mi">9</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="k">if</span><span class="p">(</span><span class="nv">$ok</span><span class="p">){</span>
+    <span class="k">echo</span> <span class="s2">"user deleted!"</span><span class="p">;</span>
+  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"can't delete user!"</span><span class="p">;</span>
+  <span class="p">}</span>
+</pre></div>
+
+<p><strong>note</strong>: all parameter values are sanitized before execution, you dont have to escape values beforehand.</p>
+
+<div class="highlight"><pre>  <span class="nv">$new_user_id</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">insert</span><span class="p">(</span><span class="s1">'users'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+                                <span class="s1">'name'</span>  <span class="o">=&gt;</span> <span class="s2">"jothn"</span><span class="p">,</span>
+                                <span class="s1">'email'</span> <span class="o">=&gt;</span> <span class="s2">"johnsmith@email.com"</span><span class="p">,</span>
+                                <span class="s1">'group'</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+                                <span class="s1">'active'</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+                              <span class="p">)</span>
+                          <span class="p">);</span>
+  <span class="k">if</span><span class="p">(</span><span class="nv">$new_user_id</span><span class="p">){</span>
+    <span class="k">echo</span> <span class="s2">"new user inserted with the id </span><span class="si">$new_user_id</span><span class="s2">"</span><span class="p">;</span>
+  <span class="p">}</span>
+</pre></div>
+
+<h3>binding parameters on queries</h3>
+
+<p>Binding parameters is a good way of preventing mysql insjections as the parameters are sanitized before execution.</p>
+
+<div class="highlight"><pre>  <span class="nv">$Result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">"SELECT * FROM users WHERE id_user = ? AND active = ? LIMIT 1"</span><span class="p">,</span><span class="k">array</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span>
+  <span class="k">if</span><span class="p">(</span><span class="nv">$Result</span><span class="p">){</span>
+    <span class="nv">$User</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchArray</span><span class="p">();</span>
+    <span class="nb">print_r</span><span class="p">(</span><span class="nv">$User</span><span class="p">);</span>
+  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"user not found"</span><span class="p">;</span>
+  <span class="p">}</span>
+</pre></div>
+
+<h3>Using the OBJ_mysql_result Class</h3>
+
+<p>After executing a <code>SELECT</code> query you receive a <code>OBJ_mysql_result</code> object that will help you manipulate the resultant data.
+there are diferent ways of accesing this data, check the examples bellow:</p>
+
+<h4>Fetching all data</h4>
+
+<div class="highlight"><pre>  <span class="nv">$Result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">"SELECT * FROM users"</span><span class="p">);</span>
+  <span class="nv">$AllUsers</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">();</span>
+</pre></div>
+
+<p>Fetching all data works as <code>Object</code> or <code>Array</code> the <code>fetchAll()</code> method will return the default based on the <code>$_default_result_type</code> config.
+Other methods are:</p>
+
+<div class="highlight"><pre><span class="nv">$Row</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">();</span>        <span class="c1">// Fetch a single result row as defined by the config (Array or Object)</span>
+<span class="nv">$Row</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchArray</span><span class="p">();</span>   <span class="c1">// Fetch a single result row as Array</span>
+<span class="nv">$Row</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchObject</span><span class="p">();</span>  <span class="c1">// Fetch a single result row as Object</span>
+
+<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">();</span>        <span class="c1">// Fetch all result data as defined by the config (Array or Object)</span>
+<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchAllArray</span><span class="p">();</span>   <span class="c1">// Fetch all result data as Array</span>
+<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchAllObject</span><span class="p">();</span>  <span class="c1">// Fetch all result data as Object</span>
+
+<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchColumn</span><span class="p">(</span><span class="nx">String</span> <span class="nv">$Column</span><span class="p">);</span>           <span class="c1">// Fetch a single column in a 1 dimention Array</span>
+<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchColumn</span><span class="p">(</span><span class="nx">String</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">String</span> <span class="nv">$Value</span><span class="p">);</span>  <span class="c1">// Fetch data as a key/value pair Array.</span>
+
+</pre></div>
+
+<h4>Aliases</h4>
+
+<div class="highlight"><pre>  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">()</span>                  <span class="c1">// Alias for $db-&gt;fetch(); </span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">getAll</span><span class="p">()</span>               <span class="c1">// Alias for $db-&gt;fetchAll(); </span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">getObject</span><span class="p">()</span>            <span class="c1">// Alias for $db-&gt;fetchAllObject(); </span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">getArray</span><span class="p">()</span>             <span class="c1">// Alias for $db-&gt;fetchAllArray(); </span>
+  <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">getColumn</span><span class="p">(</span><span class="nv">$key</span><span class="p">)</span>        <span class="c1">// Alias for $db-&gt;fetchColumn($key); </span>
+</pre></div>
+
+<h4>Iterations</h4>
+
+<p>To iterate a resultset you can use any fetch() method listed above</p>
+
+<div class="highlight"><pre>  <span class="nv">$Result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">"SELECT * FROM users"</span><span class="p">);</span>
+
+  <span class="c1">//using while</span>
+  <span class="k">while</span><span class="p">(</span> <span class="nv">$row</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">()</span> <span class="p">){</span>
+    <span class="k">echo</span> <span class="nv">$row</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+    <span class="k">echo</span> <span class="nv">$row</span><span class="o">-&gt;</span><span class="na">email</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">//using foreach</span>
+  <span class="k">foreach</span><span class="p">(</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">()</span> <span class="k">as</span> <span class="nv">$row</span> <span class="p">){</span>
+    <span class="k">echo</span> <span class="nv">$row</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">;</span>
+    <span class="k">echo</span> <span class="nv">$row</span><span class="o">-&gt;</span><span class="na">email</span><span class="p">;</span>
+  <span class="p">}</span>
+
+</pre></div>
+
+<h4>Logging and Errors</h4>
+
+<p>Showing the query log. the log comes with the SQL executed, the execution time and the result row count (if any)</p>
+
+<div class="highlight"><pre>
+  <span class="nb">print_r</span><span class="p">(</span><span class="nv">$db</span><span class="o">-&gt;</span><span class="na">log</span><span class="p">());</span>
+
+</pre></div>
+
+<p>to debug mysql errors:</p>
+
+<p>use <code>$db-&gt;errors()</code> to fetch all errors (returns false if no errors) or <code>$db-&gt;lastError()</code> for information on the last error.</p>
+
+<div class="highlight"><pre>  <span class="k">if</span><span class="p">(</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">errors</span><span class="p">()</span> <span class="p">){</span>
+      <span class="k">echo</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">lastError</span><span class="p">();</span>
+  <span class="p">}</span>
+</pre></div>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
