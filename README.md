@@ -152,7 +152,7 @@ $Data = $Result->fetchAllArray();   // Fetch all result data as Array
 $Data = $Result->fetchAllObject();  // Fetch all result data as Object
 
 $Data = $Result->fetchColumn(String $Column);           // Fetch a single column in a 1 dimention Array
-$Data = $Result->fetchColumn(String $key, String $Value);  // Fetch data as a key/value pair Array.
+$Data = $Result->fetchArrayPair(String $key, String $Value);  // Fetch data as a key/value pair Array.
 
 ```
 ####Aliases
