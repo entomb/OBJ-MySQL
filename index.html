@@ -180,7 +180,7 @@ Other methods are:</p>
 <span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchAllObject</span><span class="p">();</span>  <span class="c1">// Fetch all result data as Object</span>
 
 <span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchColumn</span><span class="p">(</span><span class="nx">String</span> <span class="nv">$Column</span><span class="p">);</span>           <span class="c1">// Fetch a single column in a 1 dimention Array</span>
-<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchColumn</span><span class="p">(</span><span class="nx">String</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">String</span> <span class="nv">$Value</span><span class="p">);</span>  <span class="c1">// Fetch data as a key/value pair Array.</span>
+<span class="nv">$Data</span> <span class="o">=</span> <span class="nv">$Result</span><span class="o">-&gt;</span><span class="na">fetchArrayPair</span><span class="p">(</span><span class="nx">String</span> <span class="nv">$key</span><span class="p">,</span> <span class="nx">String</span> <span class="nv">$Value</span><span class="p">);</span>  <span class="c1">// Fetch data as a key/value pair Array.</span>
 
 </pre></div>
 
@@ -234,6 +234,18 @@ Other methods are:</p>
 
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37123801-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
   </body>
 </html>
