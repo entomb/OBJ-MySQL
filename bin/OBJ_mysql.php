@@ -5,7 +5,7 @@
  * @package Database
  * @subpackage MySQL
  * @author Jonathan Tavares <the.entomb@gmail.com>
- * @license GNU General Public License, version 3 
+ * @license GNU General Public License, version 3
  * @link https://github.com/entomb/OBJ-MySQL GitHub Source
  * @filesource
  *
@@ -35,7 +35,7 @@ include("OBJ_mysql_result.php");
  * @package Database
  * @subpackage MySQL
  * @author Jonathan Tavares <the.entomb@gmail.com>
- * @license GNU General Public License, version 3 
+ * @license GNU General Public License, version 3
  * @link https://github.com/entomb/OBJ-MySQL GitHub Source
  *
 */
@@ -46,8 +46,8 @@ Class OBJ_mysql{
     private $username = "";
     private $password = "";
     private $database = "";
-    private $port = "3306"; 
-    private $charset = "UTF-8"; 
+    private $port = "3306";
+    private $charset = "UTF-8";
 
     protected $link;
     protected $LOG;
@@ -58,8 +58,8 @@ Class OBJ_mysql{
 
     var $css_mysql_box_border = "3px solid orange";
     var $css_mysql_box_bg = "#FFCC66";
-    var $exit_on_error = true; 
-    var $echo_on_error = true; 
+    var $exit_on_error = true;
+    var $echo_on_error = true;
 
     /**
      * OBJ_mysql constructor
@@ -72,15 +72,15 @@ Class OBJ_mysql{
      **  $config["password"]  = "PASSWORD";
      *
      * non mandatory configurations
-     * 
+     *
      **  $config["port"]      = "PORT"; //defaults to 3306
      **  $config["charset"]    = "CHARSET"; //defaults to UTF-8
      **  $config["exit_on_error"] = "TRUE|FALSE"; //defaults to true
      **  $config["echo_on_error"] = "TRUE|FALSE"; //defaults to true
-     * 
-     * 
+     *
+     *
      * @param array $config config array
-     * 
+     *
      */
     function OBJ_mysql($config=null){
         $this->connected = false;
@@ -94,7 +94,7 @@ Class OBJ_mysql{
      * @return boolean connection status
      */
     function connect(){
-        if($this->is_ready()) return true;   
+        if($this->is_ready()) return true;
 
         $this->link = mysqli_connect(
                             $this->hostname,
@@ -127,7 +127,7 @@ Class OBJ_mysql{
      * @param  array $config configuration array
      * @return boolean connection status
      */
-    function reconnect($config=null){ 
+    function reconnect($config=null){
         $this->close();
         $this->_loadConfig($config);
         $this->connect();
@@ -157,7 +157,7 @@ Class OBJ_mysql{
                     'SQL' => $sql,
                 );
     }
-    
+
 
     /**
      * Mysql Query
@@ -176,21 +176,21 @@ Class OBJ_mysql{
 
         if($params!==FALSE && is_array($params)){
             $sql = $this->_parseQueryParams($sql,$params);
-        } 
+        }
 
         $this->query_count++;
-        
-        $query_start_time = microtime(true); 
-        $result = mysqli_query($this->link, $sql); 
+
+        $query_start_time = microtime(true);
+        $result = mysqli_query($this->link, $sql);
         $query_duration = microtime(true)-$query_start_time;
-        
+
         $this->_logQuery($sql, $query_duration, (int)$this->affected_rows() );
 
         if(is_object($result) && $result!==null){
             //return query result object
             return new OBJ_mysql_result($sql,$result);
-        }else{  
-          
+        }else{
+
             if($result===true){
                 //this query was successfull
                 if( preg_match('/^\s*"?(INSERT|UPDATE|DELETE|REPLACE)\s+/i', $sql) ){
@@ -200,35 +200,35 @@ Class OBJ_mysql{
                     }
                     //was it an UPDATE or DELERE?
                     if($this->affected_rows()>0){
-                        return (int)$this->affected_rows();   
-                    }   
+                        return (int)$this->affected_rows();
+                    }
                     return true;
                 }else{
                     return true;
                 }
             }else{
                 //this query returned an error, we must display it
-                $this->_displayError( mysqli_error($this->link) ); 
+                $this->_displayError( mysqli_error($this->link) );
             }
-        }  
+        }
     }
 
     /**
      * Creates and executes an insert statement
      * @param  string $table target table
-     * @param  array  $data  data to insert 
+     * @param  array  $data  data to insert
      * @return mixed Affected rows or null if the query failed
      */
-    function insert($table="",$data=array()){ 
+    function insert($table="",$data=array()){
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
-            return false;    
+            return false;
         }
         if(count($data)==0){
             $this->_displayError("empty data to INSERT");
-            return false;    
-        } 
+            return false;
+        }
 
         //extracting column names
         $columns = array_keys($data);
@@ -236,7 +236,7 @@ Class OBJ_mysql{
             $columns[$k] = "`".$_key."`";
         }
 
-        $columns = implode(",",$columns); 
+        $columns = implode(",",$columns);
         //extracting values
         foreach($data as $k => $_value){
             $data[$k] = $this->secure($_value);
@@ -245,7 +245,7 @@ Class OBJ_mysql{
 
 
         $sql = "INSERT INTO `".$table."` ($columns) VALUES ($values);";
-       
+
        return $this->query($sql);
 
     }
@@ -253,19 +253,19 @@ Class OBJ_mysql{
     /**
      * Creates and executes a replace statement
      * @param  string $table target table
-     * @param  array  $data  data to insert 
+     * @param  array  $data  data to insert
      * @return mixed Affected rows or null if the query failed
      */
-    function replace($table="",$data=array()){ 
+    function replace($table="",$data=array()){
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
-            return false;    
+            return false;
         }
         if(count($data)==0){
             $this->_displayError("empty data to INSERT");
-            return false;    
-        } 
+            return false;
+        }
 
         //extracting column names
         $columns = array_keys($data);
@@ -273,7 +273,7 @@ Class OBJ_mysql{
             $columns[$k] = "`".$_key."`";
         }
 
-        $columns = implode(",",$columns); 
+        $columns = implode(",",$columns);
         //extracting values
         foreach($data as $k => $_value){
             $data[$k] = $this->secure($_value);
@@ -282,7 +282,7 @@ Class OBJ_mysql{
 
 
         $sql = "REPLACE INTO `".$table."` ($columns) VALUES ($values);";
-       
+
        return $this->query($sql);
 
     }
@@ -294,16 +294,16 @@ Class OBJ_mysql{
      * @param  string|array $where where clause
      * @return mixed Affected rows or null if the query failed
      */
-    function update($table="",$data=array(),$where="1=1"){ 
+    function update($table="",$data=array(),$where="1=1"){
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
-            return false;    
+            return false;
         }
         if(count($data)==0){
             $this->_displayError("empty data to UPDATE");
-            return false;    
-        } 
+            return false;
+        }
 
         $SET = $this->_parseArrayPair($data);
 
@@ -314,22 +314,22 @@ Class OBJ_mysql{
         }
 
         $sql = "UPDATE $table SET $SET WHERE ($WHERE);";
-        
+
         return $this->query($sql);
 
     }
 
     /**
      * Creates and executes a delete statement
-     * @param  string $table the target table 
+     * @param  string $table the target table
      * @param  string|array $where the where clause
      * @return mixed Affected rows or null if the query failed
      */
-    function delete($table="",$where="1=1"){ 
+    function delete($table="",$where="1=1"){
 
         if(strlen($table)==0){
             $this->_displayError("invalid table name");
-            return false;    
+            return false;
         }
 
         if(is_string($where)){
@@ -364,6 +364,12 @@ Class OBJ_mysql{
                 if(strpos($_key," IN")!==false){
                     $_connector = " IN";
                 }
+                if(strpos($_key," >")!==false && strpos($_key,"=")===false){
+                    $_connector = " >";
+                }
+                if(strpos($_key," <")!==false && strpos($_key,"=")===false){
+                    $_connector = " <";
+                }
                 if(strpos($_key," >=")!==false){
                     $_connector = " >=";
                 }
@@ -393,7 +399,7 @@ Class OBJ_mysql{
      *
      */
     private function _parseQueryParams($sql,$params){
-        
+
         if (strpos($sql, "?") === FALSE){ //is there anything to parse?
             return $sql;
         }
@@ -403,33 +409,33 @@ Class OBJ_mysql{
         $parse_key = md5(uniqid(time(),true));
         $parsed_sql = str_replace("?",$parse_key,$sql);
         $k = 0;
-        while(strpos($parsed_sql, $parse_key)>0){ 
-            $value = $this->secure($params[$k]); 
+        while(strpos($parsed_sql, $parse_key)>0){
+            $value = $this->secure($params[$k]);
             $parsed_sql = preg_replace("/$parse_key/",$value,$parsed_sql,1);
             $k++;
-        } 
+        }
         return $parsed_sql;
     }
 
     /**
      * Generates secure values depending on the type of the input.
      *
-     * This "smart" function will escape and secure your data depending on its type. 
+     * This "smart" function will escape and secure your data depending on its type.
      * here are some things you need to know:
      *
      ** Will send NULL if $var is empty
      ** Will treat bools as 0 or 1
      ** Will escape any string value
-     ** Will round(6) any float value. will also replace "," for "." 
+     ** Will round(6) any float value. will also replace "," for "."
      ** WARNING: Will treat strings cast as an object as RAW MySQL
      ** to use this send anything like this (object)"NOW()" and it will bypass the escaping.
-     ** make sure you only use this when you need to execute raw MySQL functions like NOW() or ENCODE() 
+     ** make sure you only use this when you need to execute raw MySQL functions like NOW() or ENCODE()
      *
      * @param mixed $var the value to secure
      * @return string Secure value
      *
     */
-    function secure($var){ 
+    function secure($var){
         if(is_object($var) && isset($var->scalar) && count((array)$var)==1){
             $var = (string)$var->scalar;
         }elseif(is_string($var)){
@@ -439,14 +445,14 @@ Class OBJ_mysql{
             $var = intval((int)$var);
         }elseif(is_float($var)){
             $var = "'".round(floatval(str_replace(",",".",$item)),6)."'";
-        }elseif(is_bool($var)){ 
+        }elseif(is_bool($var)){
             $var = (int)$var;
         }elseif(is_array($var)){
             $var = NULL;
         }
-        
+
         $var = iconv("UTF-8", "UTF-8", $var);
-        return ($var != "") ? $var  : "NULL"; 
+        return ($var != "") ? $var  : "NULL";
     }
 
     /**
@@ -482,7 +488,7 @@ Class OBJ_mysql{
 
     /**
      * Returns all erros occurrend during the execution
-     * @return array MySQL Errors 
+     * @return array MySQL Errors
      */
     function errors(){
         return count($this->_errors)>0 ? $this->_errors : false;
@@ -507,11 +513,11 @@ Class OBJ_mysql{
     /**
      * __destruct magic method
      *
-     * This will make sure that the connection is closed when the variable is unset() 
-     * 
+     * This will make sure that the connection is closed when the variable is unset()
+     *
     */
     function __destruct(){
-        $this->close(); 
+        $this->close();
         return;
     }
 
@@ -530,14 +536,14 @@ Class OBJ_mysql{
             echo "<code style='display:block;'>";
             echo $e;
             echo "</code>";
-            echo "</div>"; 
+            echo "</div>";
         }
-        
+
         if($this->exit_on_error){
             exit();
         }
-        
-    } 
+
+    }
 
     /**
      * Loads a configuration
