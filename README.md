@@ -1,5 +1,7 @@
 OBJ-MySQL
 =========
+[![Latest Stable Version](https://poser.pugx.org/entomb/obj_mysql/v/stable.png)](https://packagist.org/packages/entomb/obj_mysql)
+[![Total Downloads](https://poser.pugx.org/entomb/obj_mysql/downloads.png)](https://packagist.org/packages/entomb/obj_mysql)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/entomb/obj-mysql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 
