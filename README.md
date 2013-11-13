@@ -1,5 +1,7 @@
 OBJ-MySQL
 =========
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/entomb/obj-mysql/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 
 OBJ MySQL is a simple MySQL Abstraction Layer for PHP>5.2 that provides a simple and _secure_ interaction with your database using mysqli_* functions at its core.
 
