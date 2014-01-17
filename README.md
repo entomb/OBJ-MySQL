@@ -121,7 +121,7 @@ The correct approach if to allways check if they executed as success is allways 
 
 ###binding parameters on queries
 
-Binding parameters is a good way of preventing mysql insjections as the parameters are sanitized before execution.
+Binding parameters is a good way of preventing mysql injections as the parameters are sanitized before execution.
 
 ```php
   $Result = $db->query("SELECT * FROM users WHERE id_user = ? AND active = ? LIMIT 1",array(11,1));

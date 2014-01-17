@@ -12,8 +12,6 @@
  *
 */
 
-
-
 /**
  * OBJ-mysql - Database Result Class
  *
@@ -25,6 +23,7 @@
  * 
  *
 */
+
 Class OBJ_mysql_result{
     
 	/**
@@ -44,13 +43,11 @@ Class OBJ_mysql_result{
     */
     private $result;
 
-
     /**
      * the number of rows in the current result are loaded on the __construct
      * @access public
     */
     var $num_rows;
-
 
     /**
      * OBJ_mysql_result Construnctor
@@ -119,7 +116,6 @@ Class OBJ_mysql_result{
                 $Data[] = $row;
             }
         }
-	
         return $Data;
     }
 
@@ -235,7 +231,6 @@ Class OBJ_mysql_result{
         return;
     }
 
-
     //aliases for people used to the "get" syntax
 
     /** 
@@ -277,5 +272,4 @@ Class OBJ_mysql_result{
     function getColumn($key){
         return $this->fetchColumn($key); 
     }
-
 }

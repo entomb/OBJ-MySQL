@@ -12,7 +12,6 @@
  *
 */
 
-
 //load the result class file
 include("OBJ_mysql_result.php");
 
@@ -134,7 +133,6 @@ Class OBJ_mysql{
         return $this->is_ready();
     }
 
-
     /**
      * checks if the connection is ready
      * @return boolean connection status
@@ -157,7 +155,6 @@ Class OBJ_mysql{
                     'SQL' => $sql,
                 );
     }
-
 
     /**
      * Mysql Query
@@ -575,6 +572,4 @@ Class OBJ_mysql{
             $this->charset = $config['charset'];
         }
     }
-
-
 }
