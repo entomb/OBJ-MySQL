@@ -104,12 +104,12 @@ Class OBJ_mysql{
                         );
 
         if(!($this->link)){
-            $this->_displayError("Error connecting to mysql server");
+            $this->_displayError("Error:" . mysqli_connect_error());
         }else{
             $this->connected = true;
         }
 
-         return $this->is_ready();
+        return $this->is_ready();
     }
 
     /**
