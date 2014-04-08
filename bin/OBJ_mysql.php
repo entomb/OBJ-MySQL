@@ -441,7 +441,7 @@ Class OBJ_mysql{
         }elseif(is_int($var)){
             $var = intval((int)$var);
         }elseif(is_float($var)){
-            $var = "'".round(floatval(str_replace(",",".",$item)),6)."'";
+            $var = "'".round(floatval(str_replace(",",".",$var)),6)."'";
         }elseif(is_bool($var)){
             $var = (int)$var;
         }elseif(is_array($var)){
