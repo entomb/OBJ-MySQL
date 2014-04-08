@@ -96,7 +96,7 @@ Class OBJ_mysql{
     function connect(){
         if($this->is_ready()) return true;
 
-        $this->link = mysqli_connect(
+        $this->link = @mysqli_connect(
                             $this->hostname,
                             $this->username,
                             $this->password,
