@@ -84,8 +84,9 @@ Class OBJ_mysql{
     function OBJ_mysql($config=null){
         $this->connected = false;
         $this->_loadConfig($config);
-        $this->connect();
-        $this->set_charset($this->charset);
+        if($this->connect()){
+            $this->set_charset($this->charset);
+        }
     }
 
     /**
