@@ -21,14 +21,15 @@ include("OBJ_mysql_result.php");
  *
  **  Config DATA:
  **
- **  $database_info["hostname"]  = "YOUR_HOST";
- **  $database_info["database"]  = "YOUR_DATABASE_NAME";
- **  $database_info["username"]  = "USER_NAME";
- **  $database_info["password"]  = "PASSWORD";
- **  $database_info["port"]      = "PORT";
- **  $database_info["charset"]    = "CHARSET";
- **  $database_info["exit_on_error"] = TRUE;
- **  $database_info["echo_on_error"] = TRUE;
+ **  $config["hostname"]  = "YOUR_HOST";
+ **  $config["database"]  = "YOUR_DATABASE_NAME";
+ **  $config["username"]  = "USER_NAME";
+ **  $config["password"]  = "PASSWORD";
+ **  $config["port"]      = "PORT";
+ **  $config["charset"]    = "CHARSET";
+ **  $config["exit_on_error"] = TRUE;
+ **  $config["echo_on_error"] = TRUE;
+ **  $config["allow_logging"] = "TRUE|FALSE"; //defaults to true
  *
  *
  * @package Database
@@ -74,9 +75,10 @@ Class OBJ_mysql{
      * non mandatory configurations
      *
      **  $config["port"]      = "PORT"; //defaults to 3306
-     **  $config["charset"]    = "CHARSET"; //defaults to UTF-8
+     **  $config["charset"]    = "CHARSET"; //defaults to UTF8
      **  $config["exit_on_error"] = "TRUE|FALSE"; //defaults to true
      **  $config["echo_on_error"] = "TRUE|FALSE"; //defaults to true
+     **  $config["allow_logging"] = "TRUE|FALSE"; //defaults to true
      *
      *
      * @param array $config config array
