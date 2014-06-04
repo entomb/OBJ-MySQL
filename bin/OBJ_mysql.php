@@ -52,6 +52,7 @@ Class OBJ_mysql{
     protected $LOG;
     protected $connected = false;
     private $_errors = array();
+    private $allow_logging = true;
 
     var $query_count = 0;
 
@@ -150,6 +151,9 @@ Class OBJ_mysql{
      * @return void
      */
     private function _logQuery($sql,$duration,$results){
+        if(!$this->allow_logging){
+            return;
+        }
         $this->LOG[] = array(
                     'time' => round($duration,5),
                     'results' => $results,
@@ -568,6 +572,9 @@ Class OBJ_mysql{
         }
         if(isset($config['echo_on_error'])){
             $this->echo_on_error = $config['echo_on_error'];
+        }
+        if(isset($config['allow_logging'])){
+            $this->allow_logging = (bool)$config['allow_logging'];
         }
         if(isset($config['charset']) && !empty($config['charset'])){
             $this->charset = $config['charset'];

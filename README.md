@@ -41,32 +41,33 @@ $ git submodule add https://github.com/entomb/OBJ-MySQL.git libs/db
 
 
 ##Starting the driver
-To start the db driver you must include the main class file and pass the '$config' array described bellow. 
+To start the db driver you must include the main class file and pass the '$config' array described bellow.
 you can have multiple isntances of the Class each one with its own $config (one for Reads and one for Writes for example).
 
 ```php
     //include de main OBJ_mysql class file
     include("bin/OBJ_mysql.php");
-    
-    //configuration array 
+
+    //configuration array
     $config = array();
     $config["hostname"]  = "YOUR_HOST";
     $config["database"]  = "YOUR_DATABASE_NAME";
     $config["username"]  = "USER_NAME";
     $config["password"]  = "PASSWORD";
-    
+
     //other configurations
     $config["port"]      = "PORT"; //defaults to 3306
     $config["charset"]    = "CHARSET"; //defaults to UTF-8
     $config["exit_on_error"] = "TRUE|FALSE"; //defaults to true
-    
+    $config["allow_logging"] = "TRUE|FALSE"; //defaults to true
+
     //class instantiation
     $db = new OBJ_mysql($config);
-    
+
 ```
 
 
- 
+
 ##Using OBJ_MySQL
 
 there are numerous ways of using this library, here are some examples of the most common methods
@@ -80,7 +81,7 @@ there are numerous ways of using this library, here are some examples of the mos
 
 ###Inserting data on a table
 
-to manipulate tables you have the most important methods wrapped, 
+to manipulate tables you have the most important methods wrapped,
 they all work the same way: parsing arrays of key/value pairs and forming a safe query
 
 the methods are:
@@ -91,7 +92,7 @@ the methods are:
   $db->delete( String $Table, Array $Where); //generates a DELETE query
 ```
 
-All methods will return the resulting `mysqli_insert_id()` or true/false depending on context. 
+All methods will return the resulting `mysqli_insert_id()` or true/false depending on context.
 The correct approach if to allways check if they executed as success is allways returned
 
 ```php
@@ -117,7 +118,7 @@ The correct approach if to allways check if they executed as success is allways 
     echo "new user inserted with the id $new_user_id";
   }
 ```
- 
+
 
 ###binding parameters on queries
 
@@ -161,11 +162,11 @@ $Data = $Result->fetchArrayPair(String $key, String $Value);  // Fetch data as a
 ```
 ####Aliases
 ```php
-  $db->get()                  // Alias for $db->fetch(); 
-  $db->getAll()               // Alias for $db->fetchAll(); 
-  $db->getObject()            // Alias for $db->fetchAllObject(); 
-  $db->getArray()             // Alias for $db->fetchAllArray(); 
-  $db->getColumn($key)        // Alias for $db->fetchColumn($key); 
+  $db->get()                  // Alias for $db->fetch();
+  $db->getAll()               // Alias for $db->fetchAll();
+  $db->getObject()            // Alias for $db->fetchAllObject();
+  $db->getArray()             // Alias for $db->fetchAllArray();
+  $db->getColumn($key)        // Alias for $db->fetchColumn($key);
 ```
 
 ####Iterations
@@ -173,19 +174,19 @@ To iterate a resultset you can use any fetch() method listed above
 
 ```php
   $Result = $db->query("SELECT * FROM users");
-  
+
   //using while
   while( $row = $Result->fetch() ){
     echo $row->name;
     echo $row->email;
   }
-  
+
   //using foreach
   foreach( $Result->fetchAll() as $row ){
     echo $row->name;
     echo $row->email;
   }
-  
+
 ```
 
 ####Logging and Errors
@@ -194,7 +195,7 @@ Showing the query log. the log comes with the SQL executed, the execution time a
 ```php
 
   print_r($db->log());
-  
+
 ```
 
 to debug mysql errors:
@@ -208,5 +209,5 @@ use `$db->errors()` to fetch all errors (returns false if no errors) or `$db->la
 ```
 
 
- 
+
 

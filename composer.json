@@ -1,7 +1,7 @@
 {
     "name": "entomb/obj_mysql",
     "type": "library",
-    "version": "0.9",
+    "version": "1",
     "description": "MySQL abstraction layer",
     "keywords": ["mysql","dba","mysql abstraction layer", "msqli"],
     "homepage": "https://github.com/entomb/OBJ-MySQL",
