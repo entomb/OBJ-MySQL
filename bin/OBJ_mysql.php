@@ -46,7 +46,7 @@ Class OBJ_mysql{
     private $password = "";
     private $database = "";
     private $port = "3306";
-    private $charset = "UTF-8";
+    private $charset = "utf8";
 
     protected $link;
     protected $LOG;
