@@ -13,7 +13,7 @@ _This project is under construction, any feedback would be appreciated_
 
 Author: [Jonathan Tavares](https://github.com/entomb)
 
-**checkout the [changelog](https://github.com/entomb/OBJ-MySQL/wiki/changelog) for info on the lattest changes**
+**checkout the [changelog](https://github.com/entomb/OBJ-MySQL/wiki/changelog) for info on the latest changes**
 
 
 
@@ -33,7 +33,7 @@ Or you can require it by cloning this repo
 $ git clone https://github.com/entomb/OBJ-MySQL.git
 ```
 
-if you are already using GIT on you project you can add it as a submodule
+If you are already using GIT on you project you can add it as a submodule
 
 ```bash
 $ git submodule add https://github.com/entomb/OBJ-MySQL.git libs/db
@@ -42,7 +42,7 @@ $ git submodule add https://github.com/entomb/OBJ-MySQL.git libs/db
 
 ##Starting the driver
 To start the db driver you must include the main class file and pass the '$config' array described bellow.
-you can have multiple isntances of the Class each one with its own $config (one for Reads and one for Writes for example).
+you can have multiple instances of the Class each one with its own $config (one for Reads and one for Writes for example).
 
 ```php
     //include de main OBJ_mysql class file
@@ -81,7 +81,7 @@ there are numerous ways of using this library, here are some examples of the mos
 
 ###Inserting data on a table
 
-to manipulate tables you have the most important methods wrapped,
+To manipulate tables you have the most important methods wrapped,
 they all work the same way: parsing arrays of key/value pairs and forming a safe query
 
 the methods are:
@@ -93,7 +93,7 @@ the methods are:
 ```
 
 All methods will return the resulting `mysqli_insert_id()` or true/false depending on context.
-The correct approach if to allways check if they executed as success is allways returned
+The correct approach if to always check if they executed as success is always returned
 
 ```php
   $ok = $db->delete('users', array( 'user_id' => 9 ) );
@@ -104,7 +104,7 @@ The correct approach if to allways check if they executed as success is allways 
   }
 ```
 
-**note**: all parameter values are sanitized before execution, you dont have to escape values beforehand.
+**note**: All parameter values are sanitized before execution, you don't have to escape values beforehand.
 
 ```php
   $new_user_id = $db->insert('users', array(
@@ -137,7 +137,7 @@ Binding parameters is a good way of preventing mysql injections as the parameter
 ###Using the OBJ_mysql_result Class
 
 After executing a `SELECT` query you receive a `OBJ_mysql_result` object that will help you manipulate the resultant data.
-there are diferent ways of accesing this data, check the examples bellow:
+There are different ways of accessing this data, check the examples bellow:
 
 ####Fetching all data
 ```php
@@ -156,7 +156,7 @@ $Data = $Result->fetchAll();        // Fetch all result data as defined by the c
 $Data = $Result->fetchAllArray();   // Fetch all result data as Array
 $Data = $Result->fetchAllObject();  // Fetch all result data as Object
 
-$Data = $Result->fetchColumn(String $Column);           // Fetch a single column in a 1 dimention Array
+$Data = $Result->fetchColumn(String $Column);           // Fetch a single column in a 1 dimension Array
 $Data = $Result->fetchArrayPair(String $key, String $Value);  // Fetch data as a key/value pair Array.
 
 ```
@@ -170,7 +170,7 @@ $Data = $Result->fetchArrayPair(String $key, String $Value);  // Fetch data as a
 ```
 
 ####Iterations
-To iterate a resultset you can use any fetch() method listed above
+To iterate a resultset, you can use any fetch() method listed above
 
 ```php
   $Result = $db->query("SELECT * FROM users");
@@ -198,9 +198,9 @@ Showing the query log. the log comes with the SQL executed, the execution time a
 
 ```
 
-to debug mysql errors:
+To debug mysql errors:
 
-use `$db->errors()` to fetch all errors (returns false if no errors) or `$db->lastError()` for information on the last error.
+Use `$db->errors()` to fetch all errors (returns false if no errors) or `$db->lastError()` for information on the last error.
 
 ```php
   if( $db->errors() ){
